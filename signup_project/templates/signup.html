@@ -30,10 +30,19 @@
                 <label for="confirm_password" class="form-label">Confirm Password</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
+            {% if password_error %}
+                    <div class="text-danger mt-1">
+                        <ul class="mb-0">
+                            {% for error in password_error %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
         <div class="mt-3 text-center">
-          <p class="text-danger">{{error}}</p>
+          <p class="text-danger">{{errors}}</p>
         </div>
         <div class="mt-3 text-center">
           <p>Already have an account? <a href="{% url 'login' %}" class="text-decoration-none">Login</a></p>
