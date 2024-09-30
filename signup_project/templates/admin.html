@@ -8,9 +8,19 @@
             <a href="{% url 'admin_add_user' %}" class="btn btn-primary btn-sm">Add New User</a>
         </div>
         <div class="card-body">
+            <form method="get">
             <div class="mb-3">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search users...">
+                <div class="input-group">
+                    
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search name" name="searchvalue" value="{{ search }}">
+                    <button class="btn btn-outline-secondary" type="submit" id="searchButton">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    
+                </div>
             </div>
+        </form>
+
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -30,8 +40,6 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    
-    
                 </tbody>
             </table>
         </div>

@@ -36,18 +36,27 @@ def user_signup(request):
         return redirect(admin_home) 
     elif request.user.is_authenticated:
         return redirect(user_home)
+        
     if request.POST:
         uname=request.POST.get('username')
         email=request.POST.get('email')
         password=request.POST.get('password')
         confirm_password=request.POST.get('confirm_password')
+        if User.objects.filter(username=uname).exists():
+                user_data = {'username': uname, 'email': email}
+                return render(request, 'signup.html', {'errors': 'Username already exists', 'userdata': user_data})
+        elif User.objects.filter(email=email).exists():
+                user_data = {'username': uname, 'email': email}
+                return render(request, 'signup.html', {'errors': 'Email already exists', 'userdata': user_data})
         if password!=confirm_password:
-            return render(request,'signup.html',{'errors':'password is not matching'})
+            user_data = {'username': uname, 'email': email}
+            return render(request,'signup.html',{'errors':'password is not matching','userdata': user_data})
         else:
             try:
                 validate_password(password)
             except ValidationError as e:
-                return render(request, 'signup.html', {'password_error': e.messages})
+                user_data = {'username': uname, 'email': email}
+                return render(request, 'signup.html', {'password_error': e.messages,'userdata': user_data})
             my_user=User.objects.create_user(uname,email,password)
             my_user.save()
             return redirect('login')
@@ -68,12 +77,20 @@ def user_logout(request):
 @never_cache
 def admin_home(request):
     if request.user.is_superuser:
-        users = User.objects.filter(is_superuser=False)
-        return render(request,'admin.html',{'users':users})
+        if request.method == 'GET':
+            search = request.GET.get('searchvalue', '')
+            if search:
+                users = User.objects.filter(is_superuser=False, username__icontains=search)
+            else:
+                users = User.objects.filter(is_superuser=False)
+        
+        return render(request, 'admin.html', {'users': users,'search':search})
+    
     elif request.user.is_authenticated:
         return redirect(user_home)
     else:
         return redirect(user_login)
+
 
 @never_cache
 def admin_user_edit(request,id):
