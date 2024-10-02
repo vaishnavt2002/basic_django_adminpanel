@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.contrib import messages
 
 
 
@@ -59,6 +60,7 @@ def user_signup(request):
                 return render(request, 'signup.html', {'password_error': e.messages,'userdata': user_data})
             my_user=User.objects.create_user(uname,email,password)
             my_user.save()
+            messages.success(request, 'Your signup is successfull')
             return redirect('login')
     return render(request,'signup.html')
 
