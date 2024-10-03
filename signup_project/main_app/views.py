@@ -163,3 +163,4 @@ def admin_delete_user(request,id):
         return redirect(user_home)
     else:
         return redirect(user_login)
+    
